@@ -5,7 +5,9 @@ using System;
 using System.Threading;
 using Moryx.Runtime.Container;
 using Moryx.Runtime.Modules;
+using Moryx.Runtime.Wcf;
 using Moryx.TestModule;
+using Moryx.Tools.Wcf;
 
 namespace Moryx.DependentTestModule
 {
@@ -22,6 +24,11 @@ namespace Moryx.DependentTestModule
         [RequiredModuleApi(IsStartDependency = true, IsOptional = false)]
         public ITestModule TestModule { get; set; }
 
+        /// <summary>
+        /// Host factory to create wcf services
+        /// </summary>
+        public IWcfHostFactory WcfHostFactory { get; set; }
+
         #region State transition
         // ReSharper disable RedundantOverridenMember
         /// <summary>
@@ -29,6 +36,7 @@ namespace Moryx.DependentTestModule
         /// </summary>
         protected override void OnInitialize()
         {
+            Container.RegisterWcf(WcfHostFactory, Logger);
             Container.LoadComponents<ISimpleHelloWorldWcfConnector>();
         }
 

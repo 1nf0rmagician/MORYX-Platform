@@ -76,6 +76,10 @@
       <Project>{d8344b1f-9db3-4e85-9195-6fffecbf6427}</Project>
       <Name>Moryx.DependentTestModule</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Moryx.Runtime.Wcf\Moryx.Runtime.Wcf.csproj">
+      <Project>{1ce2d3b1-de76-4a59-b3cb-76f120624c11}</Project>
+      <Name>Moryx.Runtime.Wcf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Moryx.Runtime.WinService\Moryx.Runtime.WinService.csproj">
       <Project>{45bf2368-b7c9-42a1-9587-f3b3eade4a67}</Project>
       <Name>Moryx.Runtime.WinService</Name>
@@ -88,10 +92,6 @@
       <Project>{cbf4c42b-488d-44af-9c60-3cd2c2aa955e}</Project>
       <Name>Moryx.TestTools.Test.Inheritance.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Marvin.Runtime.Diagnostics\Marvin.Runtime.Diagnostics.csproj">
-      <Project>{601ea517-0337-430b-840c-424b84f8f922}</Project>
-      <Name>Marvin.Runtime.Diagnostics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Moryx.Runtime.Kernel\Moryx.Runtime.Kernel.csproj">
       <Project>{8ff77f62-43c3-40fe-9dfe-01a53fe8a68e}</Project>
       <Name>Moryx.Runtime.Kernel</Name>
@@ -99,6 +99,10 @@
     <ProjectReference Include="..\Moryx.Runtime.Maintenance\Moryx.Runtime.Maintenance.csproj">
       <Project>{eb039d46-906f-44bf-ac37-b3b3634a4442}</Project>
       <Name>Moryx.Runtime.Maintenance</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Moryx\Moryx.csproj">
+      <Project>{7cd728a5-8fdd-4178-9ca4-3cd37512da24}</Project>
+      <Name>Moryx</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestModule\Moryx.TestModule.csproj">
       <Project>{24ed97ad-6d04-4dc0-afcb-c911ef0aa738}</Project>

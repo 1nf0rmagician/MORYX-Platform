@@ -10,6 +10,8 @@ using Moryx.Runtime.Container;
 using Moryx.Runtime.Maintenance.Contracts;
 using Moryx.Runtime.Maintenance.Plugins;
 using Moryx.Runtime.Modules;
+using Moryx.Runtime.Wcf;
+using Moryx.Tools.Wcf;
 using Moryx.Tools.Wcf.FileSystem;
 
 namespace Moryx.Runtime.Maintenance
@@ -41,13 +43,9 @@ namespace Moryx.Runtime.Maintenance
         public IRuntimeConfigManager RuntimeConfigManager { get; set; }
 
         /// <summary>
-        /// Set the module manager. Not injected by castle.
+        /// Host factory to create wcf services
         /// </summary>
-        /// <param name="moduleManager">the module manager.</param>
-        public void SetModuleManager(IModuleManager moduleManager)
-        {
-            _moduleManager = moduleManager;
-        }
+        public IWcfHostFactory WcfHostFactory { get; set; }
 
         #endregion
 
@@ -56,14 +54,14 @@ namespace Moryx.Runtime.Maintenance
         /// </summary>
         public override string Name => ModuleName;
 
-        /// <summary>
-        /// Called when [initialize].
-        /// </summary>
+        /// <inheritdoc />
         protected override void OnInitialize()
         {
+            Container.RegisterWcf(WcfHostFactory, Logger);
+
             Container.Register<IPolicyRetriever, PolicyRetriever>()
                 .SetInstance(_moduleManager).SetInstance(RuntimeConfigManager)
-                .SetInstance((IServerLoggerManagement)LoggerManagement);
+                .SetInstance(LoggerManagement);
 
             // Register all unit of work factories
             foreach (var factory in UnitOfWorkFactories)
@@ -72,10 +70,7 @@ namespace Moryx.Runtime.Maintenance
             Container.LoadComponents<IMaintenancePlugin>();
         }
 
-        /// <summary>
-        /// Called when [start].
-        /// </summary>
-        /// <exception cref="System.Exception">Failed to start module  + moduleConfig.PluginName</exception>
+        /// <inheritdoc />
         protected override void OnStart()
         {
             var pluginFac = Container.Resolve<IMaintenancePluginFactory>();
@@ -91,7 +86,7 @@ namespace Moryx.Runtime.Maintenance
                 var baseType = unconfiguredPlugin.GetType().BaseType;
                 if (baseType == null || !typeof(MaintenancePluginBase<,>).IsAssignableFrom(baseType.GetGenericTypeDefinition()))
                     throw new ArgumentException("MaintenancePlugins should be of type MaintenancePluginBase");
-                
+
                 var configType = baseType.GetGenericArguments()[0];
 
                 var pluginConfig = (MaintenancePluginConfig)Activator.CreateInstance(configType);
@@ -117,12 +112,16 @@ namespace Moryx.Runtime.Maintenance
             }
         }
 
-        /// <summary>
-        /// Called when [stop].
-        /// </summary>
+        /// <inheritdoc />
         protected override void OnStop()
         {
 
+        }
+
+        /// <inheritdoc />
+        void IPlatformModule.SetModuleManager(IModuleManager moduleManager)
+        {
+            _moduleManager = moduleManager;
         }
     }
 }
