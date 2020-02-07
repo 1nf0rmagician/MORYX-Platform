@@ -7,7 +7,7 @@ using Castle.Windsor;
 using Moryx.Configuration;
 using Moryx.Model;
 using Moryx.Modules;
-using Moryx.Runtime.Maintenance.Plugins.Databases;
+using Moryx.Runtime.Maintenance.Databases;
 using DatabaseConfig = Moryx.Model.DatabaseConfig;
 
 namespace Moryx.TestTools.SystemTest
