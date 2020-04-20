@@ -9,13 +9,16 @@ namespace Moryx.Model
     /// Attribute for IModelSetups to determine their target model
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class ModelSetupAttribute : ModelAttribute
+    public class ModelSetupAttribute : Attribute
     {
+        public string TargetModel { get; }
+
         /// <summary>
         /// Constructor used if the <see cref="IModelSetup"/> is only available for the defined model
         /// </summary>
-        public ModelSetupAttribute(string targetModel) : base(targetModel, typeof(IModelSetup))
+        public ModelSetupAttribute(string targetModel)
         {
+            TargetModel = targetModel;
         }
     }
 }

@@ -1,7 +1,9 @@
 // Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
 // Licensed under the Apache License, Version 2.0
 
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using Moryx.Configuration;
 using Moryx.Logging;
 
@@ -39,19 +41,20 @@ namespace Moryx.Model
     public interface IModelConfigurator
     {
         /// <summary>
-        /// Target model of this configurator
-        /// </summary>
-        string TargetModel { get; }
-
-        /// <summary>
         /// Gets the configuration of the underlying model
         /// </summary>
         IDatabaseConfig Config { get; }
 
+        string TargetModel { get; }
+
         /// <summary>
         /// Initializes the model configurator
         /// </summary>
-        void Initialize(IUnitOfWorkFactory unitOfWorkFactory, IConfigManager configManager, IModuleLogger logger);
+        void Initialize(Type contextType, IConfigManager configManager, IModuleLogger logger);
+
+        DbContext CreateContext(IDatabaseConfig config, ContextMode mode);
+
+        DbContext CreateContext(ContextMode mode);
 
         /// <summary>
         /// Builds the connection string for the database.

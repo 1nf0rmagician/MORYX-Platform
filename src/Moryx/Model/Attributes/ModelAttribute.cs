@@ -10,19 +10,19 @@ namespace Moryx.Model
     /// Registration attribute for data model factories
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class ModelAttribute : RegistrationAttribute
+    public class ModelAttribute : Attribute
     {
-        /// <summary>
-        /// Target model of this registration
-        /// </summary>
-        public string TargetModel { get; }
+        public string Name { get; }
+
+        public Type ConfiguratorType { get; }
 
         /// <summary>
         /// Register this factory using the models namespace
         /// </summary>
-        public ModelAttribute(string targetModel, params Type[] services) : base(LifeCycle.Singleton, services)
+        public ModelAttribute(string modelName, Type configuratorType)
         {
-            TargetModel = targetModel;
+            Name = modelName;
+            ConfiguratorType = configuratorType;
         }
     }
 }

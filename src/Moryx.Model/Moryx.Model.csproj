@@ -56,28 +56,16 @@
     <Compile Include="Attributes\IsUnicodeAttribute.cs" />
     <Compile Include="DatabaseConfig.cs" />
     <Compile Include="EntityBase.cs" />
-    <Compile Include="MoryxDbContext.cs" />
-    <Compile Include="Proxy\IMethodProxyStrategy.cs" />
-    <Compile Include="Proxy\ParameterPropertyMap.cs" />
-    <Compile Include="Proxy\Strategies\RemoveMethodStrategy.cs" />
     <Compile Include="Extensions\IDbContextHolder.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
-    <Compile Include="Repository\IModelDiagnostics.cs" />
+    <Compile Include="IModelConfigurator.cs" />
+    <Compile Include="IModelSetup.cs" />
     <Compile Include="Repository\ModelConfiguratorBase.cs" />
     <Compile Include="ModificationTrackedEntityBase.cs" />
-    <Compile Include="Repository\IContextUnitOfWorkFactory.cs" />
+    <Compile Include="MoryxDbContext.cs" />
     <Compile Include="Repository\IDbContextFactory.cs" />
-    <Compile Include="Proxy\Strategies\CreateMethodStrategy.cs" />
-    <Compile Include="Proxy\Strategies\FilterMethodStrategy.cs" />
-    <Compile Include="Proxy\MethodProxyStrategyBase.cs" />
-    <Compile Include="Proxy\RepositoryProxyBuilder.cs" />
     <Compile Include="Repository\NullModelConfigurator.cs" />
-    <Compile Include="Repository\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\UnitOfWork.cs" />
-    <Compile Include="Extensions\UnitOfWorkExtensions.cs" />
-    <Compile Include="Repository\UnitOfWorkFactoryBase.cs" />
-    <Compile Include="Repository\MergedUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Moryx\Moryx.csproj">

@@ -1,6 +1,8 @@
 // Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
 // Licensed under the Apache License, Version 2.0
 
+using System.Data.Entity;
+
 namespace Moryx.Model
 {
     /// <summary>
@@ -31,8 +33,8 @@ namespace Moryx.Model
         /// <summary>
         /// Execute setup in this context
         /// </summary>
-        /// <param name="openContext">Context for db access</param>
+        /// <param name="dbContext">Context for db access</param>
         /// <param name="setupData">Any data for the setup, excel or sql etc</param>
-        void Execute(IUnitOfWork openContext, string setupData);
+        void Execute(DbContext dbContext, string setupData);
     }
 }

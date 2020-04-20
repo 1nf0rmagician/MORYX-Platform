@@ -1,27 +1,7 @@
-// Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
-// Licensed under the Apache License, Version 2.0
-
-using System;
-using Moryx.Container;
+﻿using System;
 
 namespace Moryx.Model
 {
-    /// <summary>
-    /// Factory to open db context wrapped in UnitOfWork
-    /// </summary>
-    public interface IUnitOfWorkFactory : INamedChildContainer<IUnitOfWorkFactory>
-    {
-        /// <summary>
-        /// Create new context in default mode ProxyLazyLoadingTracking
-        /// </summary>
-        IUnitOfWork Create();
-
-        /// <summary>
-        /// Specify the context mode
-        /// </summary>
-        IUnitOfWork Create(ContextMode mode);
-    }
-
     /// <summary>
     /// Available ContextMode Constants
     /// </summary>

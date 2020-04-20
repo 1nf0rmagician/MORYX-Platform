@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Infrastructure;
@@ -22,21 +23,16 @@ namespace Moryx.Model
         where TConfig : class, IDatabaseConfig, new()
     {
         private IConfigManager _configManager;
-        private IDbContextFactory _contextFactory;
         private IDictionary<Type, IModelSetup> _setupDict;
         private string _configName;
         private DbMigrationsConfiguration _migrationsConfiguration;
         private string[] _migrations;
+        private Type _contextType;
 
         /// <summary>
         /// Logger for this model configurator
         /// </summary>
         protected IModuleLogger Logger { get; private set; }
-
-        /// <summary>
-        /// Current <see cref="IUnitOfWorkFactory"/> for the configurator
-        /// </summary>
-        protected IUnitOfWorkFactory UnitOfWorkFactory { get; private set; }
 
         /// <summary>
         /// The invariant name of the database provider
@@ -50,26 +46,20 @@ namespace Moryx.Model
         public IDatabaseConfig Config { get; private set; }
 
         /// <inheritdoc />
-        public void Initialize(IUnitOfWorkFactory unitOfWorkFactory, IConfigManager configManager, IModuleLogger logger)
+        public void Initialize(Type contextType, IConfigManager configManager, IModuleLogger logger)
         {
-            UnitOfWorkFactory = unitOfWorkFactory;
-
-            _contextFactory = unitOfWorkFactory as IDbContextFactory;
+            _contextType = contextType;
             _configManager = configManager;
 
             // Add logger
             Logger = logger;
 
-            // Check cast
-            if (_contextFactory == null)
-                throw new InvalidOperationException("Factory have to implement " + nameof(IDbContextFactory));
-
             // Set TargetModel
-            var factoryAttr = unitOfWorkFactory.GetType().GetCustomAttribute<ModelFactoryAttribute>();
-            if (factoryAttr == null)
-                throw new InvalidOperationException("Factory has to be attributed with the: " + nameof(ModelFactoryAttribute));
+            var modelAttr = contextType.GetCustomAttribute<ModelAttribute>();
+            if (modelAttr == null)
+                throw new InvalidOperationException("DbContext has to be attributed with the: " + nameof(ModelAttribute));
 
-            TargetModel = factoryAttr.TargetModel;
+            TargetModel = modelAttr.Name;
 
             // Load Config
             _configName = TargetModel + ".DbConfig";
@@ -88,9 +78,21 @@ namespace Moryx.Model
             // Load ModelSetups TODO: Load internals
             _setupDict = ReflectionTool.GetPublicClasses<IModelSetup>(type =>
             {
-                var scriptAttr = type.GetCustomAttribute<ModelAttribute>();
-                return scriptAttr != null && scriptAttr.TargetModel == TargetModel;
+                var setupAttr = type.GetCustomAttribute<ModelSetupAttribute>();
+                return setupAttr != null && setupAttr.TargetModel == TargetModel;
             }).ToDictionary(t => t, t => (IModelSetup)null);
+        }
+
+        public DbContext CreateContext(ContextMode mode)
+        {
+            return CreateContext(Config, mode);
+        }
+
+        public DbContext CreateContext(IDatabaseConfig config, ContextMode mode)
+        {
+            var context = (DbContext)Activator.CreateInstance(_contextType, BuildConnectionString(config));
+            context.SetContextMode(mode);
+            return context;
         }
 
         /// <inheritdoc />
@@ -108,7 +110,7 @@ namespace Moryx.Model
             if (!TestDatabaseConnection(config))
                 return TestConnectionResult.ConnectionError;
 
-            var context = _contextFactory.CreateContext(config, ContextMode.AllOff);
+            var context = CreateContext(config, ContextMode.AllOff);
             try
             {
                 return context.Database.Exists()
@@ -134,7 +136,7 @@ namespace Moryx.Model
                 return false;
             }
 
-            using (var context = _contextFactory.CreateContext(config, ContextMode.AllOff))
+            using (var context = CreateContext(config, ContextMode.AllOff))
             {
                 // Check if this database is present on the server
                 var dbExists = context.Database.Exists();
@@ -254,11 +256,8 @@ namespace Moryx.Model
         /// <inheritdoc />
         public void Execute(IDatabaseConfig config, IModelSetup setup, string setupData)
         {
-            var context = _contextFactory.CreateContext(config, ContextMode.AllOn);
-            using (var unitOfWork = ((IContextUnitOfWorkFactory)UnitOfWorkFactory).Create(context))
-            {
-                setup.Execute(unitOfWork, setupData);
-            }
+            var context = CreateContext(config, ContextMode.AllOn);
+            setup.Execute(context, setupData);
         }
 
         /// <summary>
@@ -331,7 +330,7 @@ namespace Moryx.Model
         /// </summary>
         private DbMigrationsConfiguration CreateDbMigrationsConfiguration()
         {
-            var configuration = UnitOfWorkFactory.GetType().Assembly.DefinedTypes
+            var configuration = _contextType.Assembly.DefinedTypes
                 .FirstOrDefault(t => typeof(DbMigrationsConfiguration).IsAssignableFrom(t));
 
             if (configuration == null)

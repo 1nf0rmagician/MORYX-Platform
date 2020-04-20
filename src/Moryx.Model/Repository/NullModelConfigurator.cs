@@ -11,13 +11,12 @@ namespace Moryx.Model
     public sealed class NullModelConfigurator : IModelConfigurator
     {
         /// <inheritdoc />
+        public IDatabaseConfig Config => null;
+
         public string TargetModel => string.Empty;
 
         /// <inheritdoc />
-        public IDatabaseConfig Config => null;
-
-        /// <inheritdoc />
-        public void Initialize(IUnitOfWorkFactory unitOfWorkFactory, IConfigManager configManager, IModuleLogger logger)
+        public void Initialize(Type contextType, IConfigManager configManager, IModuleLogger logger)
         {
 
         }
