@@ -109,9 +109,6 @@ namespace Moryx.Runtime.Kernel
             container.LoadComponents<object>(type => type.GetCustomAttribute<KernelComponentAttribute>() != null);
             container.LoadComponents<IServerModule>(module => module.GetCustomAttribute<ServerModuleAttribute>() != null);
 
-            // Load data models
-            container.Register<IDbContextFactory>().LoadComponents<IUnitOfWorkFactory>();
-
             // Load server modules
             container.LoadComponents<IServerModule>();
 

@@ -4,8 +4,8 @@
 namespace Moryx.Model
 {
     /// <summary>
-    /// Interface for updating databases from a specified version to 
-    /// an specified version. 
+    /// Interface for updating databases from a specified version to
+    /// an specified version.
     /// </summary>
     public interface IDatabaseUpdate
     {
@@ -30,12 +30,6 @@ namespace Moryx.Model
     /// </summary>
     public interface IUpdateContext
     {
-        /// <summary>
-        /// Open a new unit of work to access the model
-        /// </summary>
-        /// <returns></returns>
-        IUnitOfWork OpenUnitOfWork();
-
         /// <summary>
         /// Execute sql commands
         /// </summary>

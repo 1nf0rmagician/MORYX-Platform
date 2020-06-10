@@ -5,6 +5,7 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using Moryx.Configuration;
+using Moryx.Container;
 using Moryx.Logging;
 using Moryx.Modules;
 using Moryx.Tools;
@@ -17,6 +18,7 @@ namespace Moryx.Model
             where TContext : DbContext;
     }
 
+    [KernelComponent(typeof(IDbContextFactory))]
     public class DbContextFactory : IDbContextFactory, IInitializable
     {
         public IConfigManager ConfigManager { get; set; }

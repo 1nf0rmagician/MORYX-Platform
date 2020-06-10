@@ -32,7 +32,7 @@ namespace Moryx.Model
         DateTime Created { get; set; }
 
         /// <summary>
-        /// Thime this entity was last updatedt
+        /// Time this entity was last updated
         /// </summary>
         DateTime Updated { get; set; }
 
